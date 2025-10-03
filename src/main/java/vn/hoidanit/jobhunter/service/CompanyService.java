@@ -30,13 +30,14 @@ public class CompanyService {
         ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
 
         Meta meta = new Meta();
-        meta.setPage(pageCompany.getNumber() + 1);
-        meta.setPageSize(pageCompany.getSize());
+        meta.setPage(pageable.getPageNumber() + 1);
+        meta.setPageSize(pageable.getPageSize());
         meta.setPages(pageCompany.getTotalPages());
         meta.setTotal(pageCompany.getTotalElements());
 
         resultPaginationDTO.setMeta(meta);
         resultPaginationDTO.setResult(pageCompany.getContent());
+
         return resultPaginationDTO;
     }
 
@@ -52,7 +53,7 @@ public class CompanyService {
             currentCompany.setDescription(requestCompany.getDescription());
             currentCompany.setAddress(requestCompany.getAddress());
             currentCompany.setLogo(requestCompany.getLogo());
-            this.companyRepository.save(currentCompany);
+            return this.companyRepository.save(currentCompany);
         }
         return null;
 

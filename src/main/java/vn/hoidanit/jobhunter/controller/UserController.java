@@ -4,10 +4,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.turkraft.springfilter.boot.Filter;
 
+import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.User;
+import vn.hoidanit.jobhunter.domain.dto.ResUserDTO;
+import vn.hoidanit.jobhunter.domain.dto.ResCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.dto.ResUpdateUserDTO;
 import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.service.UserService;
-import vn.hoidanit.jobhunter.util.error.IdInvalidException;
+import vn.hoidanit.jobhunter.util.annotition.ApiMessage;
+import vn.hoidanit.jobhunter.util.error.ResourceNotFoundException;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,8 +25,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
+@RequestMapping("/api/v1")
 public class UserController {
 
     private final UserService userService;
@@ -33,11 +40,18 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
-        return ResponseEntity.ok(this.userService.fetchUserById(id));
+    @ApiMessage("fetch a user")
+    public ResponseEntity<ResUserDTO> getUserById(@PathVariable("id") long id) throws ResourceNotFoundException {
+        if (!this.userService.isIdExist(id)) {
+            throw new ResourceNotFoundException(
+                    "Id: " + id + " không tồn tại");
+        }
+        User user = this.userService.fetchUserById(id);
+        return ResponseEntity.ok(userService.convertToFetchUserDTO(user));
     }
 
     @GetMapping("/users")
+    @ApiMessage("fetch all users")
     public ResponseEntity<ResultPaginationDTO> getAllUser(
             @Filter Specification<User> spec,
             Pageable pageable) {
@@ -46,24 +60,40 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> createNewUser(@RequestBody User user) {
+    @ApiMessage("create a new user")
+    public ResponseEntity<ResCreateUserDTO> createNewUser(@Valid @RequestBody User user)
+            throws ResourceNotFoundException {
+
+        if (this.userService.isEmailExist(user.getEmail())) {
+            throw new ResourceNotFoundException(
+                    "Email " + user.getEmail() + "đã tồn tại, vui lòng sử dụng email khác");
+        }
+
         String hashPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
-        User newUser = userService.handleCreateUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        User savedUser = userService.handleCreateUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.convertToResCreateUserDTO(savedUser));
     }
 
     @PutMapping("/users")
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
-        return ResponseEntity.ok(userService.handleUpdateUser(user));
+    @ApiMessage("update a user")
+    public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User user)
+            throws ResourceNotFoundException {
+        if (!this.userService.isIdExist(user.getId())) {
+            throw new ResourceNotFoundException(
+                    "Id: " + user.getId() + " không tồn tại");
+        }
+        User savedUser = userService.handleUpdateUser(user);
+        return ResponseEntity.ok(userService.convertToResUpdateUserDTO(savedUser));
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
-        if (id > 1500) {
-            throw new IdInvalidException("Id khong lon hon 1500");
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) throws ResourceNotFoundException {
+        if (!this.userService.isIdExist(id)) {
+            throw new ResourceNotFoundException(
+                    "Id: " + id + " không tồn tại");
         }
         this.userService.handleDeleteUser(id);
-        return ResponseEntity.status(HttpStatus.OK).body("delete");
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }
