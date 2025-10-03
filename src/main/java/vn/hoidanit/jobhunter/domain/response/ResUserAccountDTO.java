@@ -1,4 +1,4 @@
-package vn.hoidanit.jobhunter.domain.dto;
+package vn.hoidanit.jobhunter.domain.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResUserLoginDTO {
-    private long id;
-    private String email;
-    private String name;
+public class ResUserAccountDTO {
+    private ResUserLoginDTO user;
 
 }
