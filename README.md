@@ -77,7 +77,7 @@ Các cấu hình chính nằm trong `src/main/resources/application.properties`:
 - **Port:**  
   `server.port=8080` (có thể đổi nếu cần)
 - **JWT:**  
-  `hoidanit.jwt.base64-secret`, `hoidanit.jwt.access-token-validity-in-seconds`
+  `huy.jwt.base64-secret`, `huy.jwt.access-token-validity-in-seconds`
 - **Phân trang, upload file:**  
   Tùy chỉnh theo nhu cầu dự án.
 
