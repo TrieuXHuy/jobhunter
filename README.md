@@ -1,39 +1,40 @@
-# 🚀 Java Spring RESTful APIs - Xây Dựng Backend với Spring Boot
+# 🚀 Job Portal Backend - RESTful APIs với Spring Boot
 
-This is the **starter project** for the **Java Spring RESTful APIs - Xây Dựng Backend với Spring Boot** course by **Hỏi Dân IT**.
-
----
-
-## 📢 IMPORTANT NOTICE  
-This source code is provided **exclusively for enrolled students** in this course.  
-❌ **DO NOT UPLOAD this code to GitHub (Public), GitLab, or any other public repository.**  
-❌ **DO NOT SHARE this project on forums, Telegram, Discord, or social media.**  
-✅ You **can use Git** for personal learning, but **your repository must be PRIVATE**.
-
-💡 **Violators may face:**  
-- DMCA takedown requests.  
-- Account suspension on learning platforms.  
-- Legal action in serious cases.  
-
-📩 For inquiries, contact: **admin@hoidanit.vn**
+Đây là dự án **backend** cho ứng dụng **web việc làm** được xây dựng bằng **Java Spring Boot**.
 
 ---
 
-## 📖 How to Use This Project?
+## 📖 Giới thiệu
 
-===
-Môi trường chạy dự án: Java 17
+Dự án cung cấp hệ thống RESTful API để quản lý:
 
-## Về tác giả
-Mọi thông tin về Tác giả Hỏi Dân IT, các bạn có thể tìm kiếm tại đây:
+* 👤 Người dùng (ứng viên, nhà tuyển dụng, admin).
+* 💼 Tin tuyển dụng (tạo, cập nhật, tìm kiếm).
+* 📝 Ứng tuyển & quản lý hồ sơ.
+* 🔐 Xác thực & phân quyền với JWT + Spring Security.
 
-Website chính thức: https://hoidanit.vn/
+---
 
-Youtube “Hỏi Dân IT” : https://www.youtube.com/@hoidanit
+## 🛠️ Công nghệ sử dụng
 
-Tiktok “Hỏi Dân IT” :  https://www.tiktok.com/@hoidanit
+* Java 17
+* Spring Boot (REST API, Validation, Exception Handling)
+* Spring Security + JWT (Authentication & Authorization)
+* MySQL (Database)
+* Hibernate / JPA (ORM)
+* Gradle (Build & Dependency Management)
 
-Fanpage “Hỏi Dân IT” : https://www.facebook.com/askITwithERIC/
+---
 
-Udemy Hỏi Dân IT: https://www.udemy.com/user/eric-7039/
+## ⚡ Hướng dẫn chạy dự án
 
+1. Clone dự án về máy:
+    
+    git clone https://github.com/<username>/<repo-name>.git cd <repo-name>
+   
+3. Cấu hình application.properties (MySQL username, password).
+4. Chạy lệnh:
+   
+   mvn spring-boot:run
+   
+5. API sẽ chạy tại: `http://localhost:8080/api/v1/...`
