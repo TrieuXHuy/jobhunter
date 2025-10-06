@@ -1,0 +1,84 @@
+package vn.huy.jobhunter.controller;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.turkraft.springfilter.boot.Filter;
+
+import jakarta.validation.Valid;
+import vn.huy.jobhunter.domain.Job;
+import vn.huy.jobhunter.domain.User;
+import vn.huy.jobhunter.domain.response.ResCreateJobDTO;
+import vn.huy.jobhunter.domain.response.ResUpdateJobDTO;
+import vn.huy.jobhunter.domain.response.ResultPaginationDTO;
+import vn.huy.jobhunter.service.JobService;
+import vn.huy.jobhunter.util.annotition.ApiMessage;
+import vn.huy.jobhunter.util.error.ResourceNotFoundException;
+
+@Controller
+@RequestMapping("/api/v1")
+public class JobController {
+
+    private JobService jobService;
+
+    public JobController(JobService jobService) {
+        this.jobService = jobService;
+    }
+
+    @PostMapping("/jobs")
+    @ApiMessage("create a company")
+    public ResponseEntity<ResCreateJobDTO> createNewCompany(@Valid @RequestBody Job requestJob) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.jobService.handleCreateJob(requestJob));
+    }
+
+    @PutMapping("/jobs")
+    @ApiMessage("update a jobs")
+    public ResponseEntity<ResUpdateJobDTO> updateUser(@RequestBody Job requestJob)
+            throws ResourceNotFoundException {
+        if (!this.jobService.isIdExist(requestJob.getId())) {
+            throw new ResourceNotFoundException(
+                    "Id: " + requestJob.getId() + " không tồn tại");
+        }
+        return ResponseEntity.ok(jobService.handleUpdateJob(requestJob));
+    }
+
+    @DeleteMapping("/jobs/{id}")
+    @ApiMessage("delete a jobs")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) throws ResourceNotFoundException {
+        if (!this.jobService.isIdExist(id)) {
+            throw new ResourceNotFoundException(
+                    "Id: " + id + " không tồn tại");
+        }
+        this.jobService.handleDeleteJobs(id);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/jobs/{id}")
+    @ApiMessage("fetch a jobs")
+    public ResponseEntity<Job> getJobById(@PathVariable("id") long id) throws ResourceNotFoundException {
+        if (!this.jobService.isIdExist(id)) {
+            throw new ResourceNotFoundException(
+                    "Id: " + id + " không tồn tại");
+        }
+        return ResponseEntity.ok(this.jobService.fetchJobById(id));
+    }
+
+    @GetMapping("/jobs")
+    @ApiMessage("fetch all jobs")
+    public ResponseEntity<ResultPaginationDTO> getAllJobs(
+            @Filter Specification<Job> spec,
+            Pageable pageable) {
+
+        return ResponseEntity.ok(this.jobService.fetchAllJobs(spec, pageable));
+    }
+}

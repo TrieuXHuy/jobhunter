@@ -14,7 +14,10 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import vn.huy.jobhunter.util.SecurityUtil;
 
@@ -22,12 +25,15 @@ import vn.huy.jobhunter.util.SecurityUtil;
 @Table(name = "skills")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Skill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "name không được để trống")
     private String name;
 
     private Instant createdAt;
