@@ -1,8 +1,6 @@
 package vn.huy.jobhunter.service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,22 +56,17 @@ public class SkillService {
         meta.setTotal(pageSkill.getTotalElements());
 
         rs.setMeta(meta);
-
-        // remove sensitive data
-        List<Skill> listSkill = pageSkill.getContent()
-                .stream()
-                .map(item -> new Skill(
-                        item.getId(),
-                        item.getName(),
-                        item.getCreatedAt(),
-                        item.getUpdatedAt(),
-                        item.getCreatedBy(),
-                        item.getUpdatedBy(),
-                        null))
-                .collect(Collectors.toList());
-
-        rs.setResult(listSkill);
+        rs.setResult(pageSkill.getContent());
 
         return rs;
+    }
+
+    public void deleteSkill(long id) {
+        Optional<Skill> skilOptional = this.skillRepository.findById(id);
+        Skill currentSkill = skilOptional.get();
+        currentSkill.getJobs().forEach(job -> job.getSkills().remove(currentSkill));
+
+        // delete
+        this.skillRepository.delete(currentSkill);
     }
 }

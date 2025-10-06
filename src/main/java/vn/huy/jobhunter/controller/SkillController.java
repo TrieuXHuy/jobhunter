@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,17 +65,21 @@ public class SkillController {
 
     @GetMapping("/skills")
     @ApiMessage("fetch all skills")
-    public ResponseEntity<ResultPaginationDTO> getAllUser(
+    public ResponseEntity<ResultPaginationDTO> getAllSkill(
             @Filter Specification<Skill> spec,
             Pageable pageable) {
 
         return ResponseEntity.ok(this.skillService.fetchAllSkill(spec, pageable));
     }
 
-    @DeleteMapping("/skills")
+    @DeleteMapping("/skills/{id}")
     @ApiMessage("delete a skill")
-    public ResponseEntity<Void> deleteSkill() {
-
+    public ResponseEntity<Void> deleteSkill(@PathVariable("id") long id) throws ResourceNotFoundException {
+        if (!this.skillService.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    "Id: " + id + " không tồn tại");
+        }
+        this.skillService.deleteSkill(id);
         return ResponseEntity.ok(null);
     }
 }
