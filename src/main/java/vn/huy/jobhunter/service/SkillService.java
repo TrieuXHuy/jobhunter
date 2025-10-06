@@ -10,8 +10,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.huy.jobhunter.domain.Skill;
-import vn.huy.jobhunter.domain.User;
-import vn.huy.jobhunter.domain.response.ResUserDTO;
 import vn.huy.jobhunter.domain.response.ResultPaginationDTO;
 import vn.huy.jobhunter.repository.SkillRepository;
 
