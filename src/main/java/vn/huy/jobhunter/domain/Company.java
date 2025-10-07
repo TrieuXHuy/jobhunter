@@ -44,9 +44,9 @@ public class Company {
 
     private Instant updatedAt;
 
-    private String createBy;
+    private String createdBy;
 
-    private String updateBy;
+    private String updatedBy;
 
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     @JsonIgnore
@@ -60,7 +60,7 @@ public class Company {
     public void handleBeforeCreateAt() {
         this.createdAt = Instant.now();
 
-        this.createBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
     }
@@ -68,7 +68,7 @@ public class Company {
     @PreUpdate
     public void handleBeforeUpdateAt() {
         this.updatedAt = Instant.now();
-        this.updateBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
     }
