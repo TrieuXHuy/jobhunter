@@ -1,0 +1,104 @@
+package vn.huy.jobhunter.controller;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.turkraft.springfilter.boot.Filter;
+
+import vn.huy.jobhunter.domain.Company;
+import vn.huy.jobhunter.domain.Resume;
+import vn.huy.jobhunter.domain.response.ResultPaginationDTO;
+import vn.huy.jobhunter.domain.response.resume.CreateResumeDTO;
+import vn.huy.jobhunter.domain.response.resume.ResResumeDTO;
+import vn.huy.jobhunter.domain.response.resume.UpdateResumeDTO;
+import vn.huy.jobhunter.service.JobService;
+import vn.huy.jobhunter.service.ResumeService;
+import vn.huy.jobhunter.service.UserService;
+import vn.huy.jobhunter.util.annotition.ApiMessage;
+import vn.huy.jobhunter.util.error.ResourceNotFoundException;
+
+@RestController
+@RequestMapping("/api/v1")
+public class ResumeController {
+
+    private final ResumeService resumeService;
+    private final UserService userService;
+    private final JobService jobService;
+
+    public ResumeController(ResumeService resumeService,
+            UserService userService,
+            JobService jobService) {
+        this.resumeService = resumeService;
+        this.userService = userService;
+        this.jobService = jobService;
+    }
+
+    @PostMapping("/resumes")
+    @ApiMessage("Create a resume")
+    public ResponseEntity<CreateResumeDTO> createNewResume(@RequestBody Resume resumeRequest)
+            throws ResourceNotFoundException {
+
+        if (!this.userService.isIdExist(resumeRequest.getUser().getId()) ||
+                !this.jobService.isIdExist(resumeRequest.getJob().getId())) {
+            throw new ResourceNotFoundException("User/ Job không tồn tại");
+        }
+
+        return ResponseEntity.ok(resumeService.createNewResume(resumeRequest));
+    }
+
+    @PutMapping("/resumes")
+    @ApiMessage("update a resume")
+    public ResponseEntity<UpdateResumeDTO> updateResume(@RequestBody Resume requestJob)
+            throws ResourceNotFoundException {
+        if (!this.resumeService.isIdExist(requestJob.getId())) {
+            throw new ResourceNotFoundException(
+                    "Id: " + requestJob.getId() + " không tồn tại");
+        }
+
+        return ResponseEntity.ok(this.resumeService.handleUpdateResume(requestJob));
+    }
+
+    @DeleteMapping("/resumes/{id}")
+    @ApiMessage("update a resume")
+    public ResponseEntity<Void> deleteResume(@PathVariable("id") long id)
+            throws ResourceNotFoundException {
+        if (!this.resumeService.isIdExist(id)) {
+            throw new ResourceNotFoundException(
+                    "Id: " + id + " không tồn tại");
+        }
+        this.resumeService.detaleById(id);
+        return ResponseEntity.ok().body(null);
+    }
+
+    @GetMapping("/resumes")
+    @ApiMessage("fetch resumes")
+    public ResponseEntity<ResultPaginationDTO> getResumes(
+            @Filter Specification<Resume> spec,
+            Pageable pageable) {
+
+        return ResponseEntity.ok(this.resumeService.fetchResumes(spec, pageable));
+    }
+
+    @GetMapping("/resumes/{id}")
+    @ApiMessage("Get resume by id")
+    public ResponseEntity<ResResumeDTO> getResume(@PathVariable("id") Long id)
+            throws ResourceNotFoundException {
+        if (!this.resumeService.isIdExist(id)) {
+            throw new ResourceNotFoundException(
+                    "Id: " + id + " không tồn tại");
+        }
+
+        ResResumeDTO dto = resumeService.getResumeById(id);
+        return ResponseEntity.ok(dto);
+    }
+
+}

@@ -47,7 +47,7 @@ public class CompanyController {
     }
 
     @PutMapping("/companies")
-    @ApiMessage("udpate a company")
+    @ApiMessage("update a company")
     public ResponseEntity<Company> updateCompany(@Valid @RequestBody Company requestCompany) {
         return ResponseEntity.ok(companyService.handleUpdateCompany(requestCompany));
     }

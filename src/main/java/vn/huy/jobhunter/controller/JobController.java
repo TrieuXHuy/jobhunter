@@ -35,14 +35,14 @@ public class JobController {
     }
 
     @PostMapping("/jobs")
-    @ApiMessage("create a company")
-    public ResponseEntity<ResCreateJobDTO> createNewCompany(@Valid @RequestBody Job requestJob) {
+    @ApiMessage("create a jobs")
+    public ResponseEntity<ResCreateJobDTO> createNewJob(@Valid @RequestBody Job requestJob) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.jobService.handleCreateJob(requestJob));
     }
 
     @PutMapping("/jobs")
     @ApiMessage("update a jobs")
-    public ResponseEntity<ResUpdateJobDTO> updateUser(@RequestBody Job requestJob)
+    public ResponseEntity<ResUpdateJobDTO> updateJob(@RequestBody Job requestJob)
             throws ResourceNotFoundException {
         if (!this.jobService.isIdExist(requestJob.getId())) {
             throw new ResourceNotFoundException(
@@ -53,7 +53,7 @@ public class JobController {
 
     @DeleteMapping("/jobs/{id}")
     @ApiMessage("delete a jobs")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) throws ResourceNotFoundException {
+    public ResponseEntity<Void> deleteJob(@PathVariable("id") long id) throws ResourceNotFoundException {
         if (!this.jobService.isIdExist(id)) {
             throw new ResourceNotFoundException(
                     "Id: " + id + " không tồn tại");
