@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.huy.jobhunter.util.SecurityUtil;
@@ -28,7 +29,10 @@ public class Resume {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "email không được để trống")
     private String email;
+
+    @NotBlank(message = "url không được để trống (upload cv chưa thành công)")
     private String url;
 
     @Enumerated(EnumType.STRING)

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.turkraft.springfilter.boot.Filter;
 
-import vn.huy.jobhunter.domain.Company;
+import jakarta.validation.Valid;
 import vn.huy.jobhunter.domain.Resume;
 import vn.huy.jobhunter.domain.response.ResultPaginationDTO;
 import vn.huy.jobhunter.domain.response.resume.CreateResumeDTO;
@@ -44,10 +44,12 @@ public class ResumeController {
 
     @PostMapping("/resumes")
     @ApiMessage("Create a resume")
-    public ResponseEntity<CreateResumeDTO> createNewResume(@RequestBody Resume resumeRequest)
+    public ResponseEntity<CreateResumeDTO> createNewResume(@Valid @RequestBody Resume resumeRequest)
             throws ResourceNotFoundException {
 
-        if (!this.userService.isIdExist(resumeRequest.getUser().getId()) ||
+        if (resumeRequest.getUser() == null || resumeRequest.getUser().getId() == null ||
+                resumeRequest.getJob() == null || resumeRequest.getJob().getId() == null ||
+                !this.userService.isIdExist(resumeRequest.getUser().getId()) ||
                 !this.jobService.isIdExist(resumeRequest.getJob().getId())) {
             throw new ResourceNotFoundException("User/ Job không tồn tại");
         }
@@ -68,7 +70,7 @@ public class ResumeController {
     }
 
     @DeleteMapping("/resumes/{id}")
-    @ApiMessage("update a resume")
+    @ApiMessage("delete a resume")
     public ResponseEntity<Void> deleteResume(@PathVariable("id") long id)
             throws ResourceNotFoundException {
         if (!this.resumeService.isIdExist(id)) {

@@ -38,19 +38,21 @@ public class ResumeService {
             User user = new User();
             user.setId(reqResume.getUser().getId());
             resume.setUser(user);
-        }
+        } else
+            return null;
 
         // Gán Job
         if (reqResume.getJob() != null && reqResume.getJob().getId() != null) {
             Job job = new Job();
             job.setId(reqResume.getJob().getId());
             resume.setJob(job);
-        }
+        } else
+            return null;
 
         Resume savedResume = this.resumeRepository.save(resume);
 
         CreateResumeDTO resumeDTO = new CreateResumeDTO();
-        resumeDTO.setId(savedResume.getId()); // ⚠️ nên trả id của resume, không phải user
+        resumeDTO.setId(savedResume.getId());
         resumeDTO.setCreatedAt(savedResume.getCreatedAt());
         resumeDTO.setCreatedBy(savedResume.getCreatedBy());
 
