@@ -22,7 +22,7 @@ public class GlobalException {
             UsernameNotFoundException.class,
             BadCredentialsException.class,
             ResourceNotFoundException.class })
-    public ResponseEntity<RestResponse<Object>> handleIdInvalidException(Exception ex) {
+    public ResponseEntity<RestResponse<Object>> handleException(Exception ex) {
         RestResponse<Object> rest = new RestResponse<>();
         rest.setStatusCode(HttpStatus.BAD_REQUEST.value());
         rest.setError(ex.getMessage());
@@ -56,5 +56,16 @@ public class GlobalException {
         rest.setMessage(errors.size() > 1 ? errors : errors.get(0).toString());
 
         return ResponseEntity.badRequest().body(rest);
+    }
+
+    @ExceptionHandler({
+            StorageException.class })
+    public ResponseEntity<RestResponse<Object>> handleFileUploadException(Exception ex) {
+        RestResponse<Object> rest = new RestResponse<>();
+        rest.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        rest.setError(ex.getMessage());
+        rest.setMessage("Exception upload file...");
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rest);
     }
 }

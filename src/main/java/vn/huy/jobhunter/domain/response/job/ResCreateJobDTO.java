@@ -1,4 +1,4 @@
-package vn.huy.jobhunter.domain.response;
+package vn.huy.jobhunter.domain.response.job;
 
 import java.time.Instant;
 import java.util.List;
