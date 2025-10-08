@@ -30,6 +30,11 @@ public class CompanyService {
         return this.companyRepository.save(company);
     }
 
+    public Company fetchCompanyById(long id) {
+        Optional<Company> companyOptional = this.companyRepository.findById(id);
+        return companyOptional.isPresent() ? companyOptional.get() : null;
+    }
+
     public ResultPaginationDTO fetchCompany(Specification<Company> spec, Pageable pageable) {
         Page<Company> pageCompany = this.companyRepository.findAll(spec, pageable);
         ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();

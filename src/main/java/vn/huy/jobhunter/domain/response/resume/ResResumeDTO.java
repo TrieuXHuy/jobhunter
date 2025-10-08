@@ -22,6 +22,7 @@ public class ResResumeDTO {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
+    private String companyName;
     private ResResumeDTO.User user;
     private ResResumeDTO.Job job;
 

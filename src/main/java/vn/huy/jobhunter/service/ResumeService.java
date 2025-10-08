@@ -81,7 +81,7 @@ public class ResumeService {
         Optional<Resume> optionalResume = this.resumeRepository.findById(id);
 
         if (optionalResume.isEmpty()) {
-            return null; // hoặc trả về Optional<ResResumeDTO> cũng được
+            return null;
         }
 
         Resume resume = optionalResume.get();
@@ -95,6 +95,10 @@ public class ResumeService {
         dto.setUpdatedAt(resume.getUpdatedAt());
         dto.setCreatedBy(resume.getCreatedBy());
         dto.setUpdatedBy(resume.getUpdatedBy());
+
+        if (resume.getJob() != null) {
+            dto.setCompanyName(resume.getJob().getCompany().getName());
+        }
 
         if (resume.getUser() != null) {
             dto.setUser(new ResResumeDTO.User(
@@ -135,6 +139,10 @@ public class ResumeService {
             dto.setUpdatedAt(resume.getUpdatedAt());
             dto.setCreatedBy(resume.getCreatedBy());
             dto.setUpdatedBy(resume.getUpdatedBy());
+
+            if (resume.getJob() != null) {
+                dto.setCompanyName(resume.getJob().getCompany().getName());
+            }
 
             if (resume.getUser() != null) {
                 dto.setUser(new ResResumeDTO.User(
