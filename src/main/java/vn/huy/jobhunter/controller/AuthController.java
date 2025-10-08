@@ -61,14 +61,15 @@ public class AuthController {
         // create a token
         ResLoginDTO resLoginDTO = new ResLoginDTO();
 
-        ResUserLoginDTO user = new ResUserLoginDTO();
+        ResUserLoginDTO userLoginDTO = new ResUserLoginDTO();
         User currentUserDB = this.userService.handleGetUserByUsername(loginDto.getUsername());
 
         if (currentUserDB != null) {
-            user.setId(currentUserDB.getId());
-            user.setEmail(currentUserDB.getEmail());
-            user.setName(currentUserDB.getName());
-            resLoginDTO.setUser(user);
+            userLoginDTO.setId(currentUserDB.getId());
+            userLoginDTO.setEmail(currentUserDB.getEmail());
+            userLoginDTO.setName(currentUserDB.getName());
+            userLoginDTO.setRole(currentUserDB.getRole());
+            resLoginDTO.setUser(userLoginDTO);
         }
 
         String access_Token = this.securityUtil.createAccessToken(authentication.getName(), resLoginDTO);
@@ -100,13 +101,14 @@ public class AuthController {
 
         User currentUserDB = this.userService.handleGetUserByUsername(email);
         ResUserAccountDTO userAccountDTO = new ResUserAccountDTO();
-        ResUserLoginDTO userLogin = new ResUserLoginDTO();
+        ResUserLoginDTO userLoginDTO = new ResUserLoginDTO();
 
         if (currentUserDB != null) {
-            userLogin.setId(currentUserDB.getId());
-            userLogin.setEmail(currentUserDB.getEmail());
-            userLogin.setName(currentUserDB.getName());
-            userAccountDTO.setUser(userLogin);
+            userLoginDTO.setId(currentUserDB.getId());
+            userLoginDTO.setEmail(currentUserDB.getEmail());
+            userLoginDTO.setName(currentUserDB.getName());
+            userLoginDTO.setRole(currentUserDB.getRole());
+            userAccountDTO.setUser(userLoginDTO);
         }
         return ResponseEntity.ok(userAccountDTO);
     }
@@ -130,14 +132,15 @@ public class AuthController {
 
         ResLoginDTO resLoginDTO = new ResLoginDTO();
 
-        ResUserLoginDTO user = new ResUserLoginDTO();
+        ResUserLoginDTO userLoginDTO = new ResUserLoginDTO();
         User currentUserDB = this.userService.handleGetUserByUsername(email);
 
         if (currentUserDB != null) {
-            user.setId(currentUserDB.getId());
-            user.setEmail(currentUserDB.getEmail());
-            user.setName(currentUserDB.getName());
-            resLoginDTO.setUser(user);
+            userLoginDTO.setId(currentUserDB.getId());
+            userLoginDTO.setEmail(currentUserDB.getEmail());
+            userLoginDTO.setName(currentUserDB.getName());
+            userLoginDTO.setRole(currentUserDB.getRole());
+            resLoginDTO.setUser(userLoginDTO);
         }
 
         String access_Token = this.securityUtil.createAccessToken(email, resLoginDTO);

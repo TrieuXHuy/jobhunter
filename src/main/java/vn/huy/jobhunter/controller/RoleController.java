@@ -48,11 +48,6 @@ public class RoleController {
     @ApiMessage("update a roles")
     public ResponseEntity<Role> updateRole(@Valid @RequestBody Role reqRole) throws ResourceNotFoundException {
 
-        if (this.roleService.isExistsByName(reqRole.getName())) {
-            throw new ResourceNotFoundException(
-                    "Name đã tồn tại");
-        }
-
         if (!this.roleService.isIdExist(reqRole.getId())) {
             throw new ResourceNotFoundException(
                     "Id không tồn tại");

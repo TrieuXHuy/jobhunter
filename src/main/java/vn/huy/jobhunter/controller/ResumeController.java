@@ -92,7 +92,7 @@ public class ResumeController {
 
     @GetMapping("/resumes/{id}")
     @ApiMessage("Get resume by id")
-    public ResponseEntity<ResResumeDTO> getResume(@PathVariable("id") Long id)
+    public ResponseEntity<ResResumeDTO> getResumeById(@PathVariable("id") Long id)
             throws ResourceNotFoundException {
         if (!this.resumeService.isIdExist(id)) {
             throw new ResourceNotFoundException(
@@ -101,6 +101,13 @@ public class ResumeController {
 
         ResResumeDTO dto = resumeService.getResumeById(id);
         return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("resumes/by-user")
+    @ApiMessage("Get list resume by user")
+    public ResponseEntity<ResultPaginationDTO> fetchResumeByUser(
+            Pageable pageable) {
+        return ResponseEntity.ok().body(this.resumeService.fetchResumeByUser(pageable));
     }
 
 }
