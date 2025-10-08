@@ -56,9 +56,8 @@ public class PermissionController {
                 reqPermission.getMethod(),
                 reqPermission.getModule());
 
-        if (isExists) {
-            throw new ResourceNotFoundException(
-                    "Permission đã tồn tại");
+        if (isExists || this.permissionService.isNameExits(reqPermission.getName())) {
+            throw new ResourceNotFoundException("Permission đã tồn tại");
         }
 
         if (!this.permissionService.isIdExisting(reqPermission.getId())) {

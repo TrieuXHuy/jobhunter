@@ -2,12 +2,14 @@ package vn.huy.jobhunter.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import vn.huy.jobhunter.domain.User;
 import vn.huy.jobhunter.domain.request.ReqLoginDTO;
+import vn.huy.jobhunter.domain.response.ResCreateUserDTO;
 import vn.huy.jobhunter.domain.response.ResLoginDTO;
 import vn.huy.jobhunter.domain.response.ResUserAccountDTO;
 import vn.huy.jobhunter.domain.response.ResUserLoginDTO;
@@ -34,6 +37,7 @@ public class AuthController {
     private AuthenticationManagerBuilder authenticationManagerBuilder;
     private SecurityUtil securityUtil;
     private UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${huy.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
@@ -41,10 +45,12 @@ public class AuthController {
     public AuthController(
             AuthenticationManagerBuilder authenticationManagerBuilder,
             SecurityUtil securityUtil,
-            UserService userService) {
+            UserService userService,
+            PasswordEncoder passwordEncoder) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityUtil = securityUtil;
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/auth/login")
@@ -92,6 +98,22 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, resCookie.toString())
                 .body(resLoginDTO);
+    }
+
+    @PostMapping("/auth/register")
+    @ApiMessage("register a new user")
+    public ResponseEntity<ResCreateUserDTO> register(@Valid @RequestBody User user)
+            throws ResourceNotFoundException {
+
+        if (this.userService.isEmailExist(user.getEmail())) {
+            throw new ResourceNotFoundException(
+                    "Email " + user.getEmail() + "đã tồn tại, vui lòng sử dụng email khác");
+        }
+
+        String hashPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashPassword);
+        User savedUser = userService.handleCreateUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.convertToResCreateUserDTO(savedUser));
     }
 
     @GetMapping("/auth/account")

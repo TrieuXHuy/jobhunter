@@ -63,6 +63,16 @@ public class RoleController {
         return ResponseEntity.ok(this.roleService.fetchAllRoles(spec, pageable));
     }
 
+    @GetMapping("/roles/{id}")
+    @ApiMessage("get a role")
+    public ResponseEntity<Role> getRole(@PathVariable("id") long id) throws ResourceNotFoundException {
+        if (!this.roleService.isIdExist(id)) {
+            throw new ResourceNotFoundException(
+                    "Id không tồn tại");
+        }
+        return ResponseEntity.ok(this.roleService.fetchById(id));
+    }
+
     @DeleteMapping("/roles/{id}")
     @ApiMessage("delete a roles")
     public ResponseEntity<Void> DeleteRole(@PathVariable("id") long id) throws ResourceNotFoundException {

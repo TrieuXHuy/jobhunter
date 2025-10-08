@@ -68,4 +68,8 @@ public class PermissionService {
     public boolean isIdExisting(long id) {
         return this.permissionRepository.existsById(id);
     }
+
+    public boolean isNameExits(String name) {
+        return this.permissionRepository.existsByName(name);
+    }
 }
