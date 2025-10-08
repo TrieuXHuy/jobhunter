@@ -1,6 +1,7 @@
 package vn.huy.jobhunter.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -100,5 +101,10 @@ public class RoleService {
 
     public boolean isIdExist(long id) {
         return this.roleRepository.existsById(id);
+    }
+
+    public Role fetchById(long id) {
+        Optional<Role> roleOptional = this.roleRepository.findById(id);
+        return roleOptional.isPresent() ? roleOptional.get() : null;
     }
 }

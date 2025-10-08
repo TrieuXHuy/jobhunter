@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-// import com.fasterxml.jackson.annotation.JsonFormat;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -68,6 +66,10 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     List<Resume> resumes;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @PrePersist
     public void handleBeforeCreateAt() {
