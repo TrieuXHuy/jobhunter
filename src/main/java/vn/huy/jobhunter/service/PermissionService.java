@@ -72,4 +72,9 @@ public class PermissionService {
     public boolean isNameExits(String name) {
         return this.permissionRepository.existsByName(name);
     }
+
+    public Permission findById(long id) {
+        Optional<Permission> permissionOptional = this.permissionRepository.findById(id);
+        return permissionOptional.isPresent() ? permissionOptional.get() : null;
+    }
 }

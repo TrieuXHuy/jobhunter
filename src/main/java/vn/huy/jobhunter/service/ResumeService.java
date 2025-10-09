@@ -1,6 +1,7 @@
 package vn.huy.jobhunter.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,9 +183,7 @@ public class ResumeService {
     }
 
     public ResultPaginationDTO fetchResumeByUser(Pageable pageable) {
-        String email = SecurityUtil.getCurrentUserLogin().isPresent()
-                ? SecurityUtil.getCurrentUserLogin().get()
-                : "";
+        String email = SecurityUtil.getCurrentUserLogin().orElse("");
 
         FilterNode node = filterParser.parse("email='" + email + "'");
         FilterSpecification<Resume> spec = filterSpecificationConverter.convert(node);
@@ -199,7 +198,15 @@ public class ResumeService {
         mt.setTotal(pageResume.getTotalElements());
 
         rs.setMeta(mt);
-        rs.setResult(this.getResumeById(pageResume.getContent().get(0).getId()));
+
+        // Lấy tất cả resume và chuyển sang ResResumeDTO
+        List<ResResumeDTO> resumes = pageResume.getContent().stream()
+                .map(Resume::getId)
+                .map(this::getResumeById) // gọi hàm format dto
+                .filter(Objects::nonNull) // loại bỏ null nếu có
+                .toList();
+
+        rs.setResult(resumes);
 
         return rs;
     }

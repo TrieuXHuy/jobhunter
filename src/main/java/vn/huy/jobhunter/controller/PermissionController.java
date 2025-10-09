@@ -49,23 +49,37 @@ public class PermissionController {
     }
 
     @PutMapping("/permissions")
-    @ApiMessage("update a permission")
+    @ApiMessage("Update a permission")
     public ResponseEntity<Permission> updatePermission(@Valid @RequestBody Permission reqPermission)
             throws ResourceNotFoundException {
-        Boolean isExists = this.permissionService.isApiExisting(reqPermission.getApiPath(),
-                reqPermission.getMethod(),
-                reqPermission.getModule());
 
-        if (isExists || this.permissionService.isNameExits(reqPermission.getName())) {
-            throw new ResourceNotFoundException("Permission đã tồn tại");
+        // Kiểm tra xem permission theo ID có tồn tại không
+        Permission existingPermission = this.permissionService.findById(reqPermission.getId());
+
+        String currentName = existingPermission.getName();
+        String newName = reqPermission.getName();
+
+        // Kiểm tra API path/method/module nếu tên không đổi
+        if (newName.equals(currentName)) {
+            Boolean isApiExists = this.permissionService.isApiExisting(
+                    reqPermission.getApiPath(),
+                    reqPermission.getMethod(),
+                    reqPermission.getModule());
+
+            if (isApiExists) {
+                throw new ResourceNotFoundException("Permission với API path này đã tồn tại");
+            }
+        } else {
+            // Tên đổi → bạn có thể bỏ qua check API, hoặc log nếu muốn
+            if (this.permissionService.isNameExits(newName)) {
+                throw new ResourceNotFoundException("Permission với tên này đã tồn tại");
+            }
         }
 
-        if (!this.permissionService.isIdExisting(reqPermission.getId())) {
-            throw new ResourceNotFoundException(
-                    "Id không tồn tại");
-        }
+        // Thực hiện update permission
+        Permission updatedPermission = this.permissionService.handleUpdatePermission(reqPermission);
 
-        return ResponseEntity.ok(this.permissionService.handleUpdatePermission(reqPermission));
+        return ResponseEntity.ok(updatedPermission);
     }
 
     @GetMapping("/permissions")
