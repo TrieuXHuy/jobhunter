@@ -1,5 +1,9 @@
 package vn.huy.jobhunter.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.turkraft.springfilter.boot.Filter;
+import com.turkraft.springfilter.builder.FilterBuilder;
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 
 import jakarta.validation.Valid;
+import vn.huy.jobhunter.domain.Company;
+import vn.huy.jobhunter.domain.Job;
 import vn.huy.jobhunter.domain.Resume;
+import vn.huy.jobhunter.domain.User;
 import vn.huy.jobhunter.domain.response.ResultPaginationDTO;
 import vn.huy.jobhunter.domain.response.resume.CreateResumeDTO;
 import vn.huy.jobhunter.domain.response.resume.ResResumeDTO;
@@ -23,12 +32,19 @@ import vn.huy.jobhunter.domain.response.resume.UpdateResumeDTO;
 import vn.huy.jobhunter.service.JobService;
 import vn.huy.jobhunter.service.ResumeService;
 import vn.huy.jobhunter.service.UserService;
+import vn.huy.jobhunter.util.SecurityUtil;
 import vn.huy.jobhunter.util.annotition.ApiMessage;
 import vn.huy.jobhunter.util.error.ResourceNotFoundException;
 
 @RestController
 @RequestMapping("/api/v1")
 public class ResumeController {
+
+    @Autowired
+    private FilterBuilder filterBuilder;
+
+    @Autowired
+    private FilterSpecificationConverter filterSpecificationConverter;
 
     private final ResumeService resumeService;
     private final UserService userService;
@@ -87,7 +103,28 @@ public class ResumeController {
             @Filter Specification<Resume> spec,
             Pageable pageable) {
 
-        return ResponseEntity.ok(this.resumeService.fetchResumes(spec, pageable));
+        List<Long> arrJobIds = null;
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        User currentUser = this.userService.handleGetUserByUsername(email);
+        if (currentUser != null) {
+            Company userCompany = currentUser.getCompany();
+            if (userCompany != null) {
+                List<Job> companyJobs = userCompany.getJobs();
+                if (companyJobs != null && companyJobs.size() > 0) {
+                    arrJobIds = companyJobs.stream().map(x -> x.getId())
+                            .collect(Collectors.toList());
+                }
+            }
+        }
+
+        Specification<Resume> jobInSpec = filterSpecificationConverter.convert(filterBuilder.field("job")
+                .in(filterBuilder.input(arrJobIds)).get());
+
+        Specification<Resume> finalSpec = jobInSpec.and(spec);
+
+        return ResponseEntity.ok(this.resumeService.fetchResumes(finalSpec, pageable));
     }
 
     @GetMapping("/resumes/{id}")
