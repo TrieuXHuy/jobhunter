@@ -11,4 +11,6 @@ public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificat
     Boolean existsById(long id);
 
     Boolean existsByName(String name);
+
+    Role findByName(String name);
 }
