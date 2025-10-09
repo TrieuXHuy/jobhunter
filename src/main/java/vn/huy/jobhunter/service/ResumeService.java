@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.turkraft.springfilter.builder.FilterBuilder;
 import com.turkraft.springfilter.converter.FilterSpecification;
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 import com.turkraft.springfilter.parser.FilterParser;
@@ -29,8 +28,8 @@ import vn.huy.jobhunter.util.SecurityUtil;
 @Service
 public class ResumeService {
 
-    @Autowired
-    private FilterBuilder fb;
+    // @Autowired
+    // private FilterBuilder fb;
 
     @Autowired
     private FilterParser filterParser;
