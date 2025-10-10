@@ -104,11 +104,20 @@ public class SubscriberService {
         }
     }
 
+    // @Scheduled(cron = "*/10 * * * * *")
+    // public void testCron() {
+    // System.out.println(">>> test cron");
+    // }
+
     public boolean isEmailExists(String email) {
         return subscriberRepository.existsByEmail(email);
     }
 
     public boolean isIdExists(long id) {
         return subscriberRepository.existsById(id);
+    }
+
+    public Subscriber findByEmail(String email) {
+        return this.subscriberRepository.findByEmail(email);
     }
 }

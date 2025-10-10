@@ -11,4 +11,6 @@ public interface SubscriberRepository extends JpaRepository<Subscriber, Long>, J
     Boolean existsById(long id);
 
     Boolean existsByEmail(String email);
+
+    Subscriber findByEmail(String email);
 }

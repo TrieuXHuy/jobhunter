@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 // import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 //disable security
 // @SpringBootApplication(exclude = {
@@ -21,6 +22,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @EnableAsync
+@EnableScheduling
 public class JobhunterApplication {
 
 	public static void main(String[] args) {

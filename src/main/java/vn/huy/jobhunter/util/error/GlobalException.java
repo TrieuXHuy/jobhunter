@@ -25,8 +25,8 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handleException(Exception ex) {
         RestResponse<Object> rest = new RestResponse<>();
         rest.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        rest.setError(ex.getMessage());
-        rest.setMessage("Exception occurs...");
+        rest.setError("Exception occurs...");
+        rest.setMessage(ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rest);
     }
@@ -37,8 +37,8 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handleNotFoundException(Exception ex) {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(HttpStatus.NOT_FOUND.value());
-        res.setError(ex.getMessage());
-        res.setMessage("404 Not Found. URL may not exist...");
+        res.setError("404 Not Found. URL may not exist...");
+        res.setMessage(ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
 
@@ -63,8 +63,9 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handleFileUploadException(Exception ex) {
         RestResponse<Object> rest = new RestResponse<>();
         rest.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        rest.setError(ex.getMessage());
-        rest.setMessage("Exception upload file...");
+
+        rest.setError("Exception upload file...");
+        rest.setMessage(ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rest);
     }
@@ -74,8 +75,8 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handlePermissionException(Exception ex) {
         RestResponse<Object> rest = new RestResponse<>();
         rest.setStatusCode(HttpStatus.FORBIDDEN.value());
-        rest.setError(ex.getMessage());
-        rest.setMessage("Forbitdden");
+        rest.setError("Forbitdden");
+        rest.setMessage(ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(rest);
     }

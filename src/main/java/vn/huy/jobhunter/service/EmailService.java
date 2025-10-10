@@ -14,8 +14,6 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.transaction.Transactional;
-import vn.huy.jobhunter.repository.JobRepository;
 
 @Service
 public class EmailService {
@@ -23,16 +21,13 @@ public class EmailService {
     private final MailSender mailSender;
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
-    private final JobRepository jobRepository;
 
     public EmailService(MailSender mailSender,
             JavaMailSender javaMailSender,
-            SpringTemplateEngine templateEngine,
-            JobRepository jobRepository) {
+            SpringTemplateEngine templateEngine) {
         this.javaMailSender = javaMailSender;
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
-        this.jobRepository = jobRepository;
     }
 
     public void sendSimpleEmail() {

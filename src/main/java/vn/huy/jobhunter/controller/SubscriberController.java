@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import vn.huy.jobhunter.domain.Subscriber;
 import vn.huy.jobhunter.service.SubscriberService;
+import vn.huy.jobhunter.util.SecurityUtil;
 import vn.huy.jobhunter.util.annotition.ApiMessage;
 import vn.huy.jobhunter.util.error.ResourceNotFoundException;
 
@@ -46,6 +47,15 @@ public class SubscriberController {
                     "Id: " + requestSubscriber.getId() + " không tồn tại");
         }
         return ResponseEntity.ok(subscriberService.handleUpdateSubscriber(requestSubscriber));
+    }
+
+    @PostMapping("/subscribers/skills")
+    @ApiMessage("Get subscriber's skill")
+    public ResponseEntity<Subscriber> getSubscribersSkill() throws ResourceNotFoundException {
+        String email = SecurityUtil.getCurrentUserLogin()
+                .orElseThrow(() -> new ResourceNotFoundException("User not logged in"));
+
+        return ResponseEntity.ok().body(this.subscriberService.findByEmail(email));
     }
 
 }
