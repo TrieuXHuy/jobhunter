@@ -1,12 +1,9 @@
 package vn.huy.jobhunter.controller;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.transaction.Transactional;
-import vn.huy.jobhunter.service.EmailService;
 import vn.huy.jobhunter.service.SubscriberService;
 import vn.huy.jobhunter.util.annotition.ApiMessage;
 
@@ -14,12 +11,10 @@ import vn.huy.jobhunter.util.annotition.ApiMessage;
 @RequestMapping("/api/v1")
 public class EmailController {
 
-    private final EmailService emailService;
     private final SubscriberService subscriberService;
 
-    public EmailController(EmailService emailService,
+    public EmailController(
             SubscriberService subscriberService) {
-        this.emailService = emailService;
         this.subscriberService = subscriberService;
     }
 
